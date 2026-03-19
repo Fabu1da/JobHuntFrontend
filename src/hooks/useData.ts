@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { Job, FilterType, Profile } from '../types';
+import type { Job, FilterType, Profile, JobEvaluation } from '../types';
 import axios from 'axios';
 
 export const useData = () => {
@@ -53,13 +53,28 @@ export const useData = () => {
         }))
       });
 
-      const scores = scoreRes.data as Array<{ id: string; score: number; summary: string; matched_skills: string[]; missing_skills: string[] }>;
+      console.log('Score response:', scoreRes.data);
+
+      const scores = scoreRes.data as Array<JobEvaluation>;
+      console.log('Received scores:', scores);
       
       // Map scores back to jobs
       jobs = jobs.map(job => {
         const scoreData = scores.find(s => s.id === job.id);
         if (scoreData) {
-          return { ...job, score: scoreData.score, ai_summary: scoreData.summary, scoring: false, matched_skills: scoreData.matched_skills, missing_skills: scoreData.missing_skills};
+          return { ...job, 
+            score: scoreData.score, 
+            ai_summary: scoreData.summary, 
+            scoring: false, 
+            matched_skills: scoreData.matched_skills, 
+            missing_skills: scoreData.missing_skills,
+            Verdict: scoreData.Verdict,
+            Gaps: scoreData.Gaps,
+            Hard_blockers: scoreData.Hard_blockers,
+            stand_out: scoreData.stand_out,
+            Salary_target: scoreData.Salary_target,
+            Recommendation: scoreData.Recommendation
+          };
         }
         return { ...job, scoring: false };
       });
