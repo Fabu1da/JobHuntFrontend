@@ -115,6 +115,12 @@ const toggleDescription = (id: string) => {
     });
   };
 
+  const isValidDescription = (desc?: string) => {
+    if (!desc) return false;
+    const cleanDesc = String(desc).toLowerCase().trim();
+    return cleanDesc !== 'nan' && cleanDesc !== 'none' && desc.length > 0;
+  };
+
   return (
     <div>
         <div id="jobsContainer">
@@ -158,82 +164,81 @@ const toggleDescription = (id: string) => {
 
               return (
                 <div key={job.id} className={`job-card ${scoreClass}`}>
-                  <div className="card-top">
-                    <div>
-                      <div className="job-title">{job.title}</div>
-                      <div className="job-meta" style={{ marginTop: 8 }}>
-                        <span className="meta-item">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                          </svg>
-                          {job.company || 'Unknown'}
-                        </span>
-                        <span className="meta-item">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="10" r="3" />
-                            <path d="M12 2a8 8 0 0 0-8 8c0 5.4 7.4 12.3 7.7 12.6a.5.5 0 0 0 .6 0C12.6 22.3 20 15.4 20 10a8 8 0 0 0-8-8z" />
-                          </svg>
-                          {job.location || 'Remote'}
-                        </span>
-                        {job.date_posted && <span className="meta-item">{job.date_posted}</span>}
-                        <span className={`source-badge ${sourceClass}`}>{job.site || 'job board'}</span>
+                  <div className="card-header">
+                    <div className="header-left">
+                      <h3 className="job-title">{job.title}</h3>
+                    </div>
+                    <div className="header-right">
+                      <div className={`score-badge ${scoreClass}`}>
+                        <div className="score-num">{job.score ?? '?'}</div>
+                        <div className="score-label">MATCH</div>
                       </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    </div>
-                    <div className={`score-badge ${scoreClass}`}>
-                      <div className="score-num">{job.score ?? '?'}</div>
-                      <div className="score-label">match</div>
-                    </div>
+                  </div>
+
+                  <div className="job-meta-line">
+                    <span className="meta-company">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                      </svg>
+                      {job.company || 'Unknown'}
+                    </span>
+                    <span className="meta-separator">·</span>
+                    <span className="meta-type">Full-time</span>
+                    <span className="meta-separator">·</span>
+                    <span className="meta-location">Remote OK</span>
+                    <span className="meta-separator">·</span>
+                    <span className={`source-badge ${sourceClass}`}>{job.site || 'job board'}</span>
                   </div>
 
                   <Summary job={job} />
 
                   <div className="card-actions">
-                    
                     {job.job_url && job.job_url !== 'nan' && (
                       <a className="btn-apply" href={job.job_url} target="_blank" rel="noopener noreferrer">
-                        Apply ↗
+                        Apply
                       </a>
                     )}
-                    {job.description && (
-                      <button className="btn-expand" onClick={() => toggleDescription(job.id)}>
-                        {isExpanded ? 'Hide' : 'Show'} description
+                    <button className="btn-save" title="Save this job">
+                      Save
+                    </button>
+                    {isValidDescription(job.description) && (
+                      <button className="btn-details" onClick={() => toggleDescription(job.id)}>
+                        {isExpanded ? 'Hide' : 'Show'} Details
                       </button>
                     )}
+                    <button className="btn-skip" title="Skip this job">
+                      SKIP &gt;
+                    </button>
+                  </div>
+
+                  <div className="card-footer-links">
                     {profile && (
                       <button
-                        className={`btn-cover-letter ${generatingCoverLetter.has(job.id) ? 'loading' : ''}`}
+                        className="link-button"
                         onClick={() => generateCoverLetterForJob(job)}
                         disabled={generatingCoverLetter.has(job.id)}
                       >
-                        {generatingCoverLetter.has(job.id) ? 'Writting...' : '✉️ Generate Letter'}
+                        {generatingCoverLetter.has(job.id) ? 'Generating Letter...' : 'Generate Letter'}
                       </button>
                     )}
                     {profile && (
-                      <button
-                        className={`btn-message ${generatingMessage.has(job.id) ? 'loading' : ''}`}
-                        onClick={() => generateMessageForJob(job)}
-                        disabled={generatingMessage.has(job.id)}
-                        title="Generate a personalized message to send to the recruiter"
-                      >
-                        {generatingMessage.has(job.id) ? (
-                          <>
-                            <span className="spinner-small"></span>
-                            Writting...
-                          </>
-                        ) : (
-                          '💬 Message Recruiter'
-                        )}
-                      </button>
+                      <>
+                        <span className="link-separator">·</span>
+                        <button
+                          className="link-button"
+                          onClick={() => generateMessageForJob(job)}
+                          disabled={generatingMessage.has(job.id)}
+                        >
+                          {generatingMessage.has(job.id) ? 'Generating...' : 'Message Recruiter'}
+                        </button>
+                      </>
                     )}
-                  
-                  
                   </div>
 
-                  {job.description && (
+                  {isValidDescription(job.description) && (
                     <div style={{ display: isExpanded ? 'block' : 'none' }}>
-                      {parseJobDescription(job.description)}
+                      {parseJobDescription(job.description!)}
                     </div>
                   )}
 

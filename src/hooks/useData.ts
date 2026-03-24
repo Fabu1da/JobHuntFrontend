@@ -11,6 +11,9 @@ export const useData = () => {
   const [buttonText, setButtonText] = useState('Search Jobs');
   const [error, setError] = useState<string | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [results] = useState(20);
+  const [posted_within_hours] = useState(72);
+
 
 
 
@@ -23,7 +26,7 @@ export const useData = () => {
     setAllJobs([]);
 
     try {
-      const url = `${import.meta.env.VITE_BACKEND_URL}/api/jobs?query=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}&results=20`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/jobs?query=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}&results=${encodeURIComponent(String(results))}&posted_within_hours=${encodeURIComponent(String(posted_within_hours))}`;
       const res = await fetch(url);
       const data = await res.json();
 
@@ -93,7 +96,7 @@ export const useData = () => {
 
     setIsLoading(false);
     setButtonText('Search Jobs');
-  }, [query, location, profile]);
+  }, [query, location, profile, results, posted_within_hours]);
 
   return {
     query,
