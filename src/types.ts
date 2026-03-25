@@ -5,6 +5,7 @@ export interface Job {
   location?: string;
   description?: string;
   job_url?: string;
+  job_type: string;
   site?: string;
   date_posted?: string;
   score?: number | null;
@@ -12,6 +13,7 @@ export interface Job {
   scoring?: boolean;
   matched_skills?: string[];
   missing_skills?: string[];
+  Salary_target?: string;
 }
 
 export interface AIScoreResult {
