@@ -4,9 +4,7 @@ import { parseJobDescription } from '../../service/parseDescription';
 import { useFilterContext } from '../../hooks/useContext';
 import axios from 'axios';
 
-export const CardActions = ({ job}: {
-    job: Job;
-    }) => {
+export const CardActions = ({ job}: {job: Job}) => {
 
     const { setError, profile } = useFilterContext();
 
@@ -14,8 +12,7 @@ export const CardActions = ({ job}: {
     const [generatingMessage, setGeneratingMessage] = useState<Set<string>>(new Set());
     const [messageToRecruiter, setMessageToRecruiter] = useState<Map<string, string>>(new Map());
     const [coverLetters, setCoverLetters] = useState<Map<string, string>>(new Map());
-    const [expandedJobs, setExpandedJobs] = useState<Set<string>>(new Set());
-    
+    const [expandedJobs, setExpandedJobs] = useState<Set<string>>(new Set());  
   const generateMessageForJob = async (job: Job) => {
     if (!profile) {
       setError('Please upload your CV first to generate a message to the recruiter.');
