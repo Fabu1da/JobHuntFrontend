@@ -7,8 +7,6 @@ export const JobContainer = () => {
   const { allJobs, profile, currentFilter, isLoading, error } =
     useFilterContext();
 
-  console.log("Profile:", profile);
-
   const getSourceClass = (site: string | undefined) => {
     const s = (site || "").toLowerCase();
     if (s.includes("linkedin")) return "source-linkedin";
