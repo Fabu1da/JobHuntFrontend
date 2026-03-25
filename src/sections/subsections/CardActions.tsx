@@ -4,24 +4,17 @@ import { parseJobDescription } from '../../service/parseDescription';
 import { useFilterContext } from '../../hooks/useContext';
 import axios from 'axios';
 
-export const CardActions = ({ job, 
-
-   }: {
+export const CardActions = ({ job}: {
     job: Job;
     }) => {
 
     const { setError, profile } = useFilterContext();
 
     const [generatingCoverLetter, setGeneratingCoverLetter] = useState<Set<string>>(new Set());
-      const [generatingMessage, setGeneratingMessage] = useState<Set<string>>(new Set());
-      const [messageToRecruiter, setMessageToRecruiter] = useState<Map<string, string>>(new Map());
-      const [coverLetters, setCoverLetters] = useState<Map<string, string>>(new Map());
-      const [expandedJobs, setExpandedJobs] = useState<Set<string>>(new Set());
-
-
-
-
-
+    const [generatingMessage, setGeneratingMessage] = useState<Set<string>>(new Set());
+    const [messageToRecruiter, setMessageToRecruiter] = useState<Map<string, string>>(new Map());
+    const [coverLetters, setCoverLetters] = useState<Map<string, string>>(new Map());
+    const [expandedJobs, setExpandedJobs] = useState<Set<string>>(new Set());
     
   const generateMessageForJob = async (job: Job) => {
     if (!profile) {
