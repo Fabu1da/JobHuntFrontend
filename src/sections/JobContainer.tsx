@@ -16,6 +16,16 @@ export const JobContainer = () => {
     return "source-indeed";
   };
 
+  const getActionBadgeClass = (action?: string) => {
+    const actionLower = (action || "").toLowerCase();
+    if (actionLower === "apply") return "action-apply";
+    if (actionLower === "consider") return "action-consider";
+    if (actionLower === "postpone") return "action-postpone";
+    if (actionLower === "ignore") return "action-ignore";
+    if (actionLower === "skip") return "action-ignore";
+    return "action-consider";
+  };
+
   const getFilteredJobs = () => {
     if (currentFilter === "high")
       return allJobs.filter((j) => (j.score || 0) >= 70);
@@ -96,35 +106,44 @@ export const JobContainer = () => {
                   </div>
 
                   <div className="job-meta-line">
-                    <span className="meta-company">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
+                    <div>
+                      <span className="meta-company">
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        </svg>
+                        {job.company || "Unknown"}
+                      </span>
+                      <span className="meta-separator">·</span>
+                      <span className="meta-type">
+                        {job.job_type || "Not specified"}
+                      </span>
+                      <span className="meta-separator">·</span>
+                      <span className="meta-location">
+                        {job.location || "Not specified"}
+                      </span>
+                      <span className="meta-separator">·</span>
+                      <span className={`source-badge ${sourceClass}`}>
+                        {job.site || "job board"}
+                      </span>
+                      <span className="meta-separator">·</span>
+                      <span className="meta-salary">
+                        {job.Salary_target || "Not specified"}
+                      </span>
+                    </div>
+                    <div>
+                      <span
+                        className={`action-badge ${getActionBadgeClass(job.action || job.Action)}`}
                       >
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                      </svg>
-                      {job.company || "Unknown"}
-                    </span>
-                    <span className="meta-separator">·</span>
-                    <span className="meta-type">
-                      {job.job_type || "Not specified"}
-                    </span>
-                    <span className="meta-separator">·</span>
-                    <span className="meta-location">
-                      {job.location || "Not specified"}
-                    </span>
-                    <span className="meta-separator">·</span>
-                    <span className={`source-badge ${sourceClass}`}>
-                      {job.site || "job board"}
-                    </span>
-                    <span className="meta-separator">·</span>
-                    <span className="meta-salary">
-                      {job.Salary_target || "Not specified"}
-                    </span>
+                        {job.action || job.Action || "Review"}
+                      </span>
+                    </div>
                   </div>
 
                   <Summary job={job} />

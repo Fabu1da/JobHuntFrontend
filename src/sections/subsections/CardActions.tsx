@@ -127,9 +127,7 @@ export const CardActions = ({ job }: { job: Job }) => {
             Apply
           </a>
         )}
-        <button className="btn-save" title="Save this job">
-          Save
-        </button>
+
         {isValidDescription(job.description) && (
           <button
             className="btn-details"
@@ -138,9 +136,6 @@ export const CardActions = ({ job }: { job: Job }) => {
             {isExpanded ? "Hide" : "Show"} Details
           </button>
         )}
-        <button className="btn-skip" title="Skip this job">
-          SKIP &gt;
-        </button>
       </div>
 
       <div className="card-footer-links">

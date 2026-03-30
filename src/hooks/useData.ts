@@ -15,8 +15,6 @@ export const useData = () => {
   const [posted_within_hours] = useState(72);
 
 
-
-
   const searchJobs = useCallback(async () => {
     if (!query.trim() || !profile) return;
 
@@ -56,10 +54,8 @@ export const useData = () => {
         }))
       });
 
-      console.log('Score response:', scoreRes.data);
 
       const scores = scoreRes.data as Array<JobEvaluation>;
-      console.log('Received scores:', scores);
       
       // Map scores back to jobs
       jobs = jobs.map(job => {
@@ -72,6 +68,7 @@ export const useData = () => {
             matched_skills: scoreData.matched_skills, 
             missing_skills: scoreData.missing_skills,
             Verdict: scoreData.Verdict,
+            Action: scoreData.action,
             Gaps: scoreData.Gaps,
             Hard_blockers: scoreData.Hard_blockers,
             stand_out: scoreData.stand_out,
