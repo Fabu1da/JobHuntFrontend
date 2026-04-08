@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { Job, FilterType, Profile, JobEvaluation } from '../types';
+import type { Job, FilterType, Profile } from '../types';
 import axios from 'axios';
 
 export const useData = () => {
@@ -55,7 +55,7 @@ export const useData = () => {
       });
 
 
-      const scores = scoreRes.data as Array<JobEvaluation>;
+      const scores = scoreRes.data as Array<Job>;
       
       // Map scores back to jobs
       jobs = jobs.map(job => {
@@ -68,7 +68,7 @@ export const useData = () => {
             matched_skills: scoreData.matched_skills, 
             missing_skills: scoreData.missing_skills,
             Verdict: scoreData.Verdict,
-            Action: scoreData.action,
+            Action: scoreData.Action,
             Gaps: scoreData.Gaps,
             Hard_blockers: scoreData.Hard_blockers,
             stand_out: scoreData.stand_out,

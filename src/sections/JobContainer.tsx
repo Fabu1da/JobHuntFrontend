@@ -18,6 +18,7 @@ export const JobContainer = () => {
 
   const getActionBadgeClass = (action?: string) => {
     const actionLower = (action || "").toLowerCase();
+
     if (actionLower === "apply") return "action-apply";
     if (actionLower === "consider") return "action-consider";
     if (actionLower === "postpone") return "action-postpone";
@@ -139,9 +140,9 @@ export const JobContainer = () => {
                     </div>
                     <div>
                       <span
-                        className={`action-badge ${getActionBadgeClass(job.action || job.Action)}`}
+                        className={`action-badge ${getActionBadgeClass(job.Action)}`}
                       >
-                        {job.action || job.Action || "Review"}
+                        {job.Action || "Review"}
                       </span>
                     </div>
                   </div>

@@ -15,12 +15,13 @@ export interface Job {
   missing_skills?: string[];
   Salary_target?: string;
   Action?: string;
-  action?: string;
   Verdict?: string;
   Gaps?: string;
   Hard_blockers?: string;
   Stand_out?: string;
   Recommendation?: string;
+  summary: string;
+  stand_out: string ;
 }
 
 export interface AIScoreResult {
@@ -39,19 +40,3 @@ export interface Profile {
 }
 
 export type FilterType = 'all' | 'high' | 'mid' | 'linkedin' | 'indeed' | 'glassdoor' | 'stepstone' | 'google';
-
-
-export interface JobEvaluation extends Job {
-    score: number  
-    summary: string
-    Verdict: string
-    action: string
-    Gaps: string
-    Hard_blockers: string 
-    stand_out: string 
-    Salary_target: string 
-    Recommendation: string
-    matched_skills: string[]
-    missing_skills: string[] 
-}
-    

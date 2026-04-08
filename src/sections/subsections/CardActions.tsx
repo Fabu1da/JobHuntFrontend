@@ -98,6 +98,22 @@ export const CardActions = ({ job }: { job: Job }) => {
     }
   };
 
+  const handleSaveJob = async (job: Job) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/createJob`,
+        {
+          job,
+        },
+      );
+      console.log("Job saved:", response.data);
+      alert("Job saved to your bookmarks!");
+    } catch (err) {
+      console.error("Error saving job:", err);
+      setError("Failed to save job. Please try again.");
+    }
+  };
+
   const isExpanded = expandedJobs?.has(job.id);
 
   const toggleDescription = (id: string) => {
@@ -134,6 +150,14 @@ export const CardActions = ({ job }: { job: Job }) => {
             onClick={() => toggleDescription(job.id)}
           >
             {isExpanded ? "Hide" : "Show"} Details
+          </button>
+        )}
+        {job.id && (
+          <button
+            className="btn-bookmark info-button"
+            onClick={() => handleSaveJob(job)}
+          >
+            Bookmark
           </button>
         )}
       </div>

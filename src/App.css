@@ -738,6 +738,7 @@ input:focus {
 
 .btn-save,
 .btn-details,
+.btn-bookmark,
 .btn-skip {
   background: transparent;
   color: var(--text);
@@ -748,6 +749,17 @@ input:focus {
   font-family: 'DM Sans', sans-serif;
   cursor: pointer;
   transition: all 0.15s;
+}
+
+.info-button{
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+info-button:hover{
+  background: rgba(124,106,247,0.1);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .btn-save:hover,
@@ -1085,7 +1097,6 @@ input:focus {
   color: var(--text);
   opacity: 0.9;
   line-height: 1.6;
-}
 }
 
 /* Loading state */
