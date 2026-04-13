@@ -3,9 +3,11 @@ import type { Job } from "../../types";
 import { parseJobDescription } from "../../service/parseDescription";
 import { useFilterContext } from "../../hooks/useContext";
 import axios from "axios";
+import { useAuth } from "../../hooks/useAuth";
 
 export const CardActions = ({ job }: { job: Job }) => {
   const { setError, profile } = useFilterContext();
+  const { data } = useAuth();
 
   const [generatingCoverLetter, setGeneratingCoverLetter] = useState<
     Set<string>
@@ -103,6 +105,7 @@ export const CardActions = ({ job }: { job: Job }) => {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/createJob`,
         {
+          user_id: data.user_id,
           job,
         },
       );

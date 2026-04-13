@@ -14,7 +14,7 @@ export interface Job {
   matched_skills?: string[];
   missing_skills?: string[];
   Salary_target?: string;
-  Action?: string;
+  action?: string;
   Verdict?: string;
   Gaps?: string;
   Hard_blockers?: string;

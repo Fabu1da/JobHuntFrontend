@@ -1,7 +1,15 @@
+import { Bookmark, Home, Menu, User } from "lucide-react";
 import { useEffect, useState } from "react";
+import "./navbar.css";
+import { Link } from "react-router-dom";
 
 export const Navbar = () => {
   const [isOnline, setIsOnline] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+
+  const handleMenu = () => {
+    setShowMenu((prev) => !prev);
+  };
 
   useEffect(() => {
     const checkBackend = async () => {
@@ -41,7 +49,23 @@ export const Navbar = () => {
         <span>
           {isOnline ? "backend online" : "backend offline – start server first"}
         </span>
+        <button className="menu-button" onClick={() => handleMenu()}>
+          <Menu />
+        </button>
       </div>
+      {showMenu && (
+        <div className="dropdown-menu">
+          <Link to="/" className="dropdown-item">
+            <Home /> Home
+          </Link>
+          <Link to="/bookmarks" className="dropdown-item">
+            <Bookmark /> Bookmarks
+          </Link>
+          <Link to="/profile" className="dropdown-item">
+            <User /> Profile
+          </Link>
+        </div>
+      )}
     </header>
   );
 };

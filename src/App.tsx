@@ -1,15 +1,12 @@
-import './App.css';
-
-import { Navbar } from './navbar/Navbar';
-import { Upload } from './sections/Upload';
-import { ProfileSection } from './sections/ProfileSection';
-import { Filter } from './sections/Filter';
-import { ErrorSection } from './sections/ErrorSection';
-import { JobLists } from './sections/JobLists';
-import { JobContainer } from './sections/JobContainer';
-import { DataProvider } from './context/DataContext';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { AuthProvider } from './context/AuthContext';
+import "./App.css";
+import { Routes, Route } from "react-router-dom";
+import { Navbar } from "./navbar/Navbar";
+import { DataProvider } from "./context/DataContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
+import { Home } from "./pages/Home";
+import { Bookmarks } from "./pages/Bookmarks";
+import { Profile } from "./pages/Profile";
 
 function App() {
   return (
@@ -18,12 +15,11 @@ function App() {
         <DataProvider>
           <div className="app">
             <Navbar />
-            <Upload />
-            <ProfileSection />
-            <Filter />
-            <ErrorSection  />
-            <JobLists />
-            <JobContainer />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/bookmarks" element={<Bookmarks />} />
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
           </div>
         </DataProvider>
       </ProtectedRoute>

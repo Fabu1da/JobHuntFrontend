@@ -140,9 +140,9 @@ export const JobContainer = () => {
                     </div>
                     <div>
                       <span
-                        className={`action-badge ${getActionBadgeClass(job.Action)}`}
+                        className={`action-badge ${getActionBadgeClass(job.action)}`}
                       >
-                        {job.Action || "Review"}
+                        {job.action || "Review"}
                       </span>
                     </div>
                   </div>
