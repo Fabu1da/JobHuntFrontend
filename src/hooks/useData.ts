@@ -68,7 +68,7 @@ export const useData = () => {
             matched_skills: scoreData.matched_skills, 
             missing_skills: scoreData.missing_skills,
             Verdict: scoreData.Verdict,
-            Action: scoreData.Action,
+            action: scoreData.action,
             Gaps: scoreData.Gaps,
             Hard_blockers: scoreData.Hard_blockers,
             stand_out: scoreData.stand_out,

@@ -1,7 +1,7 @@
 import type { Job } from "../../types";
 
 export const Summary = ({ job }: { job: Job }) => {
-  const isApply = (job.action || job.Action || "").toLowerCase() === "apply";
+  const isApply = (job.action || "").toLowerCase() === "apply";
 
   return job.ai_summary ? (
     <div className="ai-group">
