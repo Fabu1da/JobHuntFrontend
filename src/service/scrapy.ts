@@ -1,9 +1,9 @@
 import type { Job } from "../types";
 
-export const scrapyJobs = async (query: string, location: string) => {
+export const scrapyJobs = async (query: string, location: string, results: number = 20, posted_within_hours: number = 72) => {
   try {
 
-      const url = `${import.meta.env.VITE_BACKEND_URL}/api/jobs?query=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}&results=20`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/jobs?query=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}&results=${results}&posted_within_hours=${posted_within_hours}`;
       const res = await fetch(url);
       const data = await res.json();
 

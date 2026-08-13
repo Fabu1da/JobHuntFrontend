@@ -1,7 +1,32 @@
 import React, { useEffect, useState, type ReactNode } from "react";
 import axios from "axios";
-import { AuthContext } from "./AuthContextOnly";
+import { AuthContext, type AuthResponseData } from "./AuthContextOnly";
 import { validateUser } from "../service/userValidation";
+
+const setLocalStorage = (key: string, value: string) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch (error) {
+    console.error(`Error setting localStorage for key "${key}":`, error);
+  }
+};
+
+const getLocalStorage = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch (error) {
+    console.error(`Error getting localStorage for key "${key}":`, error);
+    return null;
+  }
+};
+
+const removeLocalStorage = (key: string) => {
+  try {
+    localStorage.removeItem(key);
+  } catch (error) {
+    console.error(`Error removing localStorage for key "${key}":`, error);
+  }
+};
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -22,8 +47,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   // Check for existing session on component mount
   useEffect(() => {
     const restoreSession = async () => {
-      const storedToken = localStorage.getItem("authToken");
-      const storedData = localStorage.getItem("authData");
+      const storedToken = getLocalStorage("authToken");
+      const storedData = getLocalStorage("authData");
 
       if (storedToken && storedData) {
         try {
@@ -34,21 +59,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           // Validate the token with the backend
           const response = await validateUser(storedToken);
 
-          if (response && response.success) {
+          if (response) {
             setToken(storedToken);
             setAuthData(JSON.parse(storedData));
             setIsAuthenticated(true);
           } else {
             // Token is invalid, clear storage
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("authData");
+            removeLocalStorage("authToken");
+            removeLocalStorage("authData");
             setIsAuthenticated(false);
           }
         } catch (error) {
           console.error("Session restore error:", error);
           // Clear invalid session
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("authData");
+          removeLocalStorage("authToken");
+          removeLocalStorage("authData");
           setIsAuthenticated(false);
         }
       }
@@ -58,44 +83,51 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     restoreSession();
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const login = async (email: string, password: string) => {
+    console.log("Attempting login with email:", email);
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/login`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
         {
-          username,
+          email,
           password,
         },
       );
-      const responseData = res.data;
+      console.log("Login response:", res.data);
+      const responseData = res.data as AuthResponseData | null;
 
-      if (responseData.success) {
-        const authToken = responseData.token;
-        console.log("Login successful, received token:", authToken);
+      if (responseData) {
+        const accessToken = responseData.tokens.accessToken;
+        console.log("Login successful, received token:", accessToken);
 
         // Store token and user data in localStorage
-        localStorage.setItem("authToken", authToken);
-        localStorage.setItem(
+        setLocalStorage("authToken", accessToken);
+        setLocalStorage("refreshToken", responseData.tokens.refreshToken);
+        setLocalStorage(
           "authData",
           JSON.stringify({
-            user_id: responseData.data.user_id,
-            username: responseData.data.username,
-            email: responseData.data.email,
+            user_id: responseData.user.user_id,
+            username:
+              responseData.user.firstName + " " + responseData.user.lastName,
+            email: responseData.user.email,
           }),
         );
 
+        axios.defaults.headers.common["Content-Type"] = "application/json";
         // Set token in axios headers for future requests
-        axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
+        axios.defaults.headers.common["Authorization"] =
+          `Bearer ${accessToken}`;
 
-        setToken(authToken);
+        setToken(accessToken);
         setIsAuthenticated(true);
         setAuthData({
-          user_id: responseData.data.user_id,
-          username: responseData.data.username,
-          email: responseData.data.email,
+          user_id: responseData.user.user_id,
+          username:
+            responseData.user.firstName + " " + responseData.user.lastName,
+          email: responseData.user.email,
         });
       } else {
-        throw new Error(responseData.message || "Login failed");
+        throw new Error(responseData || "Login failed");
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -110,8 +142,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const logout = () => {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("authData");
+    removeLocalStorage("authToken");
+    removeLocalStorage("authData");
     delete axios.defaults.headers.common["Authorization"];
     setToken(null);
     setIsAuthenticated(false);

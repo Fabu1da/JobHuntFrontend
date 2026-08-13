@@ -78,6 +78,15 @@
     font-size: 14px;
 }
 
+.success-message {
+    color: #1e8449;
+    background: #d5f5e3;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
 .toggle-auth {
     margin-top: 20px;
     text-align: center;
