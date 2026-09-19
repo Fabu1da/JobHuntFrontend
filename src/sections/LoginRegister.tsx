@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ArrowRight,
   BriefcaseBusiness,
@@ -8,10 +8,13 @@ import {
   Sparkles,
   Target,
 } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 export const LoginRegister: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useState(location.pathname !== "/register");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,6 +24,12 @@ export const LoginRegister: React.FC = () => {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const auth = useAuth();
+
+  useEffect(() => {
+    setIsLogin(location.pathname !== "/register");
+    setError("");
+    setSuccess("");
+  }, [location.pathname]);
 
   const pollRegistrationStatus = async (processId: string) => {
     const maxAttempts = 20;
@@ -92,6 +101,7 @@ export const LoginRegister: React.FC = () => {
           "Registration accepted. You can log in after the background task completes.",
       );
       setIsLogin(true);
+      navigate("/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
@@ -100,7 +110,9 @@ export const LoginRegister: React.FC = () => {
   };
 
   const switchMode = () => {
-    setIsLogin(!isLogin);
+    const nextIsLogin = !isLogin;
+    setIsLogin(nextIsLogin);
+    navigate(nextIsLogin ? "/login" : "/register");
     setError("");
     setSuccess("");
     setFirstName("");
@@ -170,9 +182,7 @@ export const LoginRegister: React.FC = () => {
               </p>
             </div>
             <div
-              className={`relative z-10 mt-auto ${
-                isLogin ? "pt-6" : "pt-4"
-              }`}
+              className={`relative z-10 mt-auto ${isLogin ? "pt-6" : "pt-4"}`}
             >
               <div className="mb-3 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.14em] text-[#6b6b80]">
                 <span>Today&apos;s matches</span>
@@ -336,9 +346,13 @@ export const LoginRegister: React.FC = () => {
 
             {!isLogin && (
               <div className="mt-5 flex items-start gap-3 rounded-lg border border-[#7c6af7]/15 bg-[#7c6af7]/[0.06] px-3.5 py-3 text-xs leading-5 text-[#8f8aa8]">
-                <Sparkles size={16} className="mt-0.5 shrink-0 text-[#7c6af7]" />
+                <Sparkles
+                  size={16}
+                  className="mt-0.5 shrink-0 text-[#7c6af7]"
+                />
                 <span>
-                  Your profile becomes the signal we use to surface roles that fit your experience.
+                  Your profile becomes the signal we use to surface roles that
+                  fit your experience.
                 </span>
               </div>
             )}
@@ -379,7 +393,8 @@ export const LoginRegister: React.FC = () => {
             </button>
             {!isLogin && (
               <p className="mt-4 text-center font-mono text-[0.65rem] leading-5 text-[#6b6b80]">
-                By creating an account, you keep control of your profile and job preferences.
+                By creating an account, you keep control of your profile and job
+                preferences.
               </p>
             )}
           </form>
