@@ -6,14 +6,16 @@ export interface AuthContextType {
     user_id: number;
     username: string;
     email: string;
+    role: string;
   };
+  permissions: string[];
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   token: string | null;
   isLoading: boolean;
 }
 
-export interface AuthResponseData {
+export interface AuthResponseType {
   tokens: {
     accessToken: string;
     refreshToken: string;
@@ -22,6 +24,7 @@ export interface AuthResponseData {
     user_id: number;
     firstName: string;
     lastName: string;
+    role: string;
     email: string;
   };
 }

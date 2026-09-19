@@ -1,6 +1,6 @@
 import React, { useEffect, useState, type ReactNode } from "react";
 import axios from "axios";
-import { AuthContext, type AuthResponseData } from "./AuthContextOnly";
+import { AuthContext, type AuthResponseType } from "./AuthContextOnly";
 import { validateUser } from "../service/userValidation";
 
 const setLocalStorage = (key: string, value: string) => {
@@ -32,14 +32,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [permissions, setPermissions] = useState<string[]>([]);
   const [authData, setAuthData] = useState<{
     user_id: number;
     username: string;
     email: string;
+    role: string;
   }>({
     user_id: 0,
     username: "",
     email: "",
+    role: "",
   });
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,6 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           if (response) {
             setToken(storedToken);
             setAuthData(JSON.parse(storedData));
+            setPermissions(response.permissions);
             setIsAuthenticated(true);
           } else {
             // Token is invalid, clear storage
@@ -94,7 +98,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         },
       );
       console.log("Login response:", res.data);
-      const responseData = res.data as AuthResponseData | null;
+      const responseData = res.data as AuthResponseType | null;
 
       if (responseData) {
         const accessToken = responseData.tokens.accessToken;
@@ -125,6 +129,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           username:
             responseData.user.firstName + " " + responseData.user.lastName,
           email: responseData.user.email,
+          role: responseData.user.role,
         });
       } else {
         throw new Error(responseData || "Login failed");
@@ -136,6 +141,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         user_id: 0,
         username: "",
         email: "",
+        role: "",
       });
       throw error;
     }
@@ -151,12 +157,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       user_id: 0,
       username: "",
       email: "",
+      role: "",
     });
   };
 
   const authValue = {
     isAuthenticated,
     data: authData,
+    permissions: permissions, // Assuming permissions are set elsewhere in your code
     login,
     logout,
     token,
