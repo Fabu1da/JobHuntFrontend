@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import { Navbar } from "./navbar/Navbar";
 import { DataProvider } from "./context/DataContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -19,6 +19,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/bookmarks" element={<Bookmarks />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
         </DataProvider>

@@ -21,7 +21,7 @@ export interface Job {
   Stand_out?: string;
   Recommendation?: string;
   summary: string;
-  stand_out: string ;
+  stand_out: string;
 }
 
 export interface AIScoreResult {
@@ -39,4 +39,27 @@ export interface Profile {
   summary: string;
 }
 
-export type FilterType = 'all' | 'high' | 'mid' | 'linkedin' | 'indeed' | 'glassdoor' | 'stepstone' | 'google';
+export interface Cv {
+  id: string;
+  originalFileName: string;
+  filePath: string;
+  mimeType: string;
+  fileSize: number;
+  rawText: string;
+  data: string;
+  status: "pending" | "processed" | "error";
+  parserModel: string;
+  parserVersion: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type FilterType =
+  | "all"
+  | "high"
+  | "mid"
+  | "linkedin"
+  | "indeed"
+  | "glassdoor"
+  | "stepstone"
+  | "google";

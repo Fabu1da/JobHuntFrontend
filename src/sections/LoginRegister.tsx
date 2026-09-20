@@ -61,6 +61,7 @@ export const LoginRegister: React.FC = () => {
     setLoading(true);
     try {
       await auth.login(email, password);
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
