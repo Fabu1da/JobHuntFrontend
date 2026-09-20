@@ -34,12 +34,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [permissions, setPermissions] = useState<string[]>([]);
   const [authData, setAuthData] = useState<{
-    user_id: number;
+    user_id: string;
     username: string;
     email: string;
     role: string;
   }>({
-    user_id: 0,
+    user_id: "",
     username: "",
     email: "",
     role: "",
@@ -102,6 +102,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
       if (responseData) {
         const accessToken = responseData.tokens.accessToken;
+        const userId = responseData.user.id ?? responseData.user.user_id ?? "";
         console.log("Login successful, received token:", accessToken);
 
         // Store token and user data in localStorage
@@ -110,7 +111,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setLocalStorage(
           "authData",
           JSON.stringify({
-            user_id: responseData.user.user_id,
+            user_id: userId,
             username:
               responseData.user.firstName + " " + responseData.user.lastName,
             email: responseData.user.email,
@@ -125,7 +126,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setToken(accessToken);
         setIsAuthenticated(true);
         setAuthData({
-          user_id: responseData.user.user_id,
+          user_id: userId,
           username:
             responseData.user.firstName + " " + responseData.user.lastName,
           email: responseData.user.email,
@@ -138,7 +139,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       console.error("Login error:", error);
       setIsAuthenticated(false);
       setAuthData({
-        user_id: 0,
+        user_id: "",
         username: "",
         email: "",
         role: "",
@@ -154,7 +155,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setToken(null);
     setIsAuthenticated(false);
     setAuthData({
-      user_id: 0,
+      user_id: "",
       username: "",
       email: "",
       role: "",

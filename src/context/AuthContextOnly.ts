@@ -3,7 +3,7 @@ import React from "react";
 export interface AuthContextType {
   isAuthenticated: boolean;
   data: {
-    user_id: number;
+    user_id: string;
     username: string;
     email: string;
     role: string;
@@ -21,7 +21,8 @@ export interface AuthResponseType {
     refreshToken: string;
   };
   user: {
-    user_id: number;
+    id: string;
+    user_id?: string;
     firstName: string;
     lastName: string;
     role: string;

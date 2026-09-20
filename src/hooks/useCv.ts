@@ -1,18 +1,45 @@
 import type { Cv } from "@/types";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useAuth } from "./useAuth";
 
 export const useCvContext = () => {
+  const {
+    data: userData,
+    isAuthenticated,
+    isLoading: authLoading,
+    token,
+  } = useAuth();
   const [cvs, setCvs] = useState<Cv[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const tokenUserId = token
+    ? (() => {
+        try {
+          const payload = JSON.parse(atob(token.split(".")[1] ?? ""));
+          return typeof payload.sub === "string" ? payload.sub : "";
+        } catch {
+          return "";
+        }
+      })()
+    : "";
+  const userId = String(userData.user_id || tokenUserId);
 
-  const getCvs = async () => {
+  const getCvs = useCallback(async () => {
     setLoading(true);
     setError(null);
+    if (!userId) {
+      setError("Unable to identify the logged-in user.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios(
-        `${import.meta.env.VITE_BACKEND_URL}/api/cv/list`,
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/cv/${userId}/list`,
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        },
       );
       if (!response) {
         throw new Error("Failed to fetch CVs");
@@ -34,7 +61,7 @@ export const useCvContext = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, userId]);
 
   const addCv = (cv: Cv) => {
     setCvs((prevCvs) => [...prevCvs, cv]);
@@ -45,8 +72,10 @@ export const useCvContext = () => {
   };
 
   useEffect(() => {
-    getCvs();
-  }, []);
+    if (!authLoading && isAuthenticated && userId && token) {
+      void getCvs();
+    }
+  }, [authLoading, getCvs, isAuthenticated, token, userId]);
 
   return {
     cvs,
