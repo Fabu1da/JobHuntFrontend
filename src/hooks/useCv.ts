@@ -11,7 +11,9 @@ export const useCvContext = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios("/api/cv/list");
+      const response = await axios(
+        `${import.meta.env.VITE_BACKEND_URL}/api/cv/list`,
+      );
       if (!response) {
         throw new Error("Failed to fetch CVs");
       }
