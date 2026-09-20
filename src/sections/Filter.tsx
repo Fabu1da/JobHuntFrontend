@@ -26,7 +26,9 @@ export const Filter = () => {
             <Search size={16} />
           </span>
           <div>
-            <h2 className="text-sm font-semibold text-[#e8e8f0]">Find your next role</h2>
+            <h2 className="text-sm font-semibold text-[#e8e8f0]">
+              Find your next role
+            </h2>
             <p className="mt-0.5 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-[#6b6b80]">
               Search by fit, not noise
             </p>
@@ -71,7 +73,7 @@ export const Filter = () => {
           <Search size={16} />
           {buttonText}
         </button>
-        </div>
+      </div>
 
       {!profile && (
         <p className="mt-3 font-mono text-[0.65rem] text-[#6b6b80]">
