@@ -29,12 +29,12 @@ export const JobContainer = () => {
 
   const getFilteredJobs = () => {
     if (currentFilter === "high")
-      return allJobs.filter((j) => (j.score || 0) >= 70);
+      return allJobs.filter((job) => (job.score || 0) >= 70);
     if (currentFilter === "mid")
-      return allJobs.filter((j) => (j.score || 0) >= 40);
+      return allJobs.filter((job) => (job.score || 0) >= 40);
     if (["linkedin", "indeed", "glassdoor", "google"].includes(currentFilter)) {
-      return allJobs.filter((j) =>
-        (j.site || "").toLowerCase().includes(currentFilter),
+      return allJobs.filter((job) =>
+        (job.site || "").toLowerCase().includes(currentFilter),
       );
     }
 
@@ -88,70 +88,91 @@ export const JobContainer = () => {
 
         {filteredJobs.length > 0 && (
           <div className="jobs-grid">
-            {filteredJobs.map((job) => {
-              const scoreClass = getScoreClass(job.score);
-              const sourceClass = getSourceClass(job.site);
+            {filteredJobs
+              .sort((a, b) => (b.score || 0) - (a.score || 0))
+              .map((eachJob) => {
+                console.log("DEBUG - eachJob:", eachJob);
+                const job = JSON.parse(eachJob.rawData || "{}");
+                const scoreClass = getScoreClass(job.score);
+                const sourceClass = getSourceClass(job.site);
 
-              return (
-                <div key={job.id} className={`job-card ${scoreClass}`}>
-                  <div className="card-header">
-                    <div className="header-left">
-                      <h3 className="job-title">{job.title}</h3>
-                    </div>
-                    <div className="header-right">
-                      <div className={`score-badge ${scoreClass}`}>
-                        <div className="score-num">{job.score ?? "?"}</div>
-                        <div className="score-label">MATCH</div>
+                console.log("DEBUG - job:", job);
+                console.log("DEBUG - scoreClass:", scoreClass);
+                console.log("DEBUG - sourceClass:", sourceClass);
+
+                return (
+                  <div key={job.id} className={`job-card ${scoreClass}`}>
+                    <div className="card-header">
+                      <div className="header-left">
+                        <h3 className="job-title">{eachJob.title}</h3>
+                      </div>
+                      <div className="header-right">
+                        <div className={`score-badge ${scoreClass}`}>
+                          <div className="score-num">
+                            {eachJob.score ?? "?"}
+                          </div>
+                          <div className="score-label">MATCH</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="job-meta-line">
-                    <div>
-                      <span className="meta-company">
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
+                    <div className="job-meta-line">
+                      <div>
+                        <span className="meta-company">
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          >
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                          </svg>
+                          {job.company || "Unknown"}
+                        </span>
+                        <span className="meta-separator">·</span>
+                        <span className="meta-type">
+                          {job.job_type || "Not specified"}
+                        </span>
+                        <span className="meta-separator">·</span>
+                        <span className="meta-location">
+                          {job !== null &&
+                          job !== undefined &&
+                          job.location &&
+                          job.location.country
+                            ? `${job.location.country} - ${job.location.city} - ${job.location.state}`
+                            : "Not specified"}
+                        </span>
+                        <span className="meta-separator">·</span>
+                        <span className={`source-badge ${sourceClass}`}>
+                          {job.site || "job board"}
+                        </span>
+                        <span className="meta-separator">·</span>
+                        <span className="meta-salary">
+                          {job !== null &&
+                          job !== undefined &&
+                          job.salary &&
+                          job.salary.min !== undefined &&
+                          job.salary.max !== undefined
+                            ? `${job.salary.min} - ${job.salary.max}`
+                            : "Not specified"}
+                        </span>
+                      </div>
+                      <div>
+                        <span
+                          className={`action-badge ${getActionBadgeClass(job.action)}`}
                         >
-                          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                        </svg>
-                        {job.company || "Unknown"}
-                      </span>
-                      <span className="meta-separator">·</span>
-                      <span className="meta-type">
-                        {job.job_type || "Not specified"}
-                      </span>
-                      <span className="meta-separator">·</span>
-                      <span className="meta-location">
-                        {job.location || "Not specified"}
-                      </span>
-                      <span className="meta-separator">·</span>
-                      <span className={`source-badge ${sourceClass}`}>
-                        {job.site || "job board"}
-                      </span>
-                      <span className="meta-separator">·</span>
-                      <span className="meta-salary">
-                        {job.Salary_target || "Not specified"}
-                      </span>
+                          {job.action || "Review"}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <span
-                        className={`action-badge ${getActionBadgeClass(job.action)}`}
-                      >
-                        {job.action || "Review"}
-                      </span>
-                    </div>
-                  </div>
 
-                  <Summary job={job} />
-                  <CardActions job={job} />
-                </div>
-              );
-            })}
+                    <Summary job={job} />
+                    <CardActions job={job} />
+                  </div>
+                );
+              })}
           </div>
         )}
 

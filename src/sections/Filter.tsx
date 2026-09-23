@@ -6,7 +6,6 @@ export const Filter = () => {
   const {
     profile,
     searchJobs,
-    isLoading,
     query,
     setQuery,
     location,
@@ -66,8 +65,7 @@ export const Filter = () => {
 
         <button
           type="button"
-          onClick={() => void searchJobs()}
-          disabled={isLoading || !profile}
+          onClick={() => searchJobs()}
           className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[#7c6af7] px-5 text-sm font-semibold text-white shadow-lg shadow-[#7c6af7]/15 transition-all hover:enabled:-translate-y-0.5 hover:enabled:bg-[#6857e8] disabled:cursor-not-allowed disabled:opacity-45"
         >
           <Search size={16} />
