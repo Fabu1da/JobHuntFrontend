@@ -1,13 +1,14 @@
-import { createContext } from 'react';
-import type { Job, FilterType, Profile } from '../types';
+import { createContext } from "react";
+import type { FilterType, Profile } from "../types";
+import type { RawJobMatch } from "@/utils/jobTypes";
 
 export interface DataContextType {
   query: string;
   setQuery: (value: string) => void;
   location: string;
   setLocation: (value: string) => void;
-  allJobs: Job[];
-  setAllJobs: (jobs: Job[]) => void;
+  allJobs: RawJobMatch[];
+  setAllJobs: (jobs: RawJobMatch[]) => void;
   currentFilter: FilterType;
   setCurrentFilter: (filter: FilterType) => void;
   isLoading: boolean;
@@ -21,4 +22,6 @@ export interface DataContextType {
   searchJobs: () => Promise<void>;
 }
 
-export const DataContext = createContext<DataContextType | undefined>(undefined);
+export const DataContext = createContext<DataContextType | undefined>(
+  undefined,
+);

@@ -1,108 +1,132 @@
-import type { Job } from "../../types";
+import type { Job } from "@/types";
+
+const toneStyles = {
+  matched: { title: "text-[#e8a23d]", tag: "text-[#e8a23d] bg-[#e8a23d]/10" },
+  preferred: { title: "text-[#6c8fb8]", tag: "text-[#6c8fb8] bg-[#6c8fb8]/10" },
+  missing: {
+    title: "text-[#8890a0]",
+    tag: "text-[#8890a0] bg-[#1c222e] border border-[#262c38]",
+  },
+  neutral: {
+    title: "text-[#8890a0]",
+    tag: "text-[#8890a0] bg-[#1c222e] border border-[#262c38]",
+  },
+} as const;
+
+const SkillRow = ({
+  title,
+  skills,
+  tone,
+}: {
+  title: string;
+  skills: string[];
+  tone: keyof typeof toneStyles;
+}) => {
+  const s = toneStyles[tone];
+  return (
+    <div>
+      <div className="mb-1.5">
+        <span className={`text-[0.78rem] font-semibold ${s.title}`}>
+          {title}
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {skills.map((skill, idx) => (
+          <span
+            key={idx}
+            className={`text-[0.78rem] px-2.5 py-1 rounded ${s.tag}`}
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export const Summary = ({ job }: { job: Job }) => {
-  return job.summary ? (
-    <div className="ai-group">
-      <div className="ai-summary">
-        <div className="ai-summary-label">Analysis</div>
-        {job.summary}
+  const hasMatchInfo =
+    job.matchedSkills.length > 0 ||
+    job.matchedPreferredSkills.length > 0 ||
+    job.missingRequiredSkills.length > 0;
+
+  if (!job.summary && !hasMatchInfo && job.responsibilities.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-col gap-2.5 border-t border-[#262c38] pt-3.5 mt-1.5">
+      {job.summary && (
+        <div className="text-[0.87rem] leading-relaxed text-[#c7cad4]">
+          <div className="font-display text-xs font-semibold text-[#e8a23d] mb-1">
+            Analysis
+          </div>
+          {job.summary}
+        </div>
+      )}
+
+      {job.missingRequiredSkills.length > 0 && (
+        <div className="rounded px-3 py-2.5 text-[0.83rem] bg-[#1c222e] border border-[#262c38]">
+          <div className="font-semibold mb-1 text-[#8890a0]">
+            Gaps against required skills
+          </div>
+          <div className="leading-relaxed text-[#8890a0]">
+            {job.missingRequiredSkills.join(", ")}
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-2.5">
+        {job.matchedSkills.length > 0 && (
+          <SkillRow
+            title="Matched skills"
+            skills={job.matchedSkills}
+            tone="matched"
+          />
+        )}
+
+        {job.matchedPreferredSkills.length > 0 && (
+          <SkillRow
+            title="Matched preferred skills"
+            skills={job.matchedPreferredSkills}
+            tone="preferred"
+          />
+        )}
+
+        {job.missingRequiredSkills.length > 0 && (
+          <SkillRow
+            title="Missing required skills"
+            skills={job.missingRequiredSkills}
+            tone="missing"
+          />
+        )}
+
+        {job.technologies.length > 0 && (
+          <SkillRow
+            title="Technologies"
+            skills={job.technologies}
+            tone="neutral"
+          />
+        )}
       </div>
 
-      <>
-        {job.Hard_blockers && (
-          <div className="hard-blockers">
-            <div className="blockers-header">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-              </svg>
-              <span className="blockers-title">Hard Blockers</span>
-            </div>
-            <div className="blockers-content">
-              {job.Hard_blockers === "No hard blockers"
-                ? "✓ No hard blockers"
-                : job.Hard_blockers}
-            </div>
+      {job.responsibilities.length > 0 && (
+        <div>
+          <div className="text-[0.78rem] font-semibold text-[#8890a0] mb-1.5">
+            Responsibilities
           </div>
-        )}
-
-        {job.missing_skills && (
-          <div className="gaps">
-            <div className="gaps-header">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
+          <ul className="list-disc list-outside pl-4 space-y-1">
+            {job.responsibilities.map((item, idx) => (
+              <li
+                key={idx}
+                className="text-[0.83rem] leading-relaxed text-[#8890a0]"
               >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" />
-              </svg>
-              <span className="gaps-title">Gaps</span>
-            </div>
-            <div className="gaps-content">
-              {job.missing_skills
-                ? "✓ No critical gaps identified"
-                : job.missing_skills}
-            </div>
-          </div>
-        )}
-      </>
-
-      <div className="skills-section">
-        {job.matched_skills && job.matched_skills.length > 0 && (
-          <div className="skills-group matched-group">
-            <div className="skills-header">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-              </svg>
-              <span className="skills-title">Matched Skills</span>
-            </div>
-            <div className="skills-tags">
-              {job.matched_skills.map((skill, idx) => (
-                <span key={idx} className="skill-tag matched-tag">
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-        {job.missing_skills && job.missing_skills.length > 0 && (
-          <div className="skills-group missing-group">
-            <div className="skills-header">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-              </svg>
-              <span className="skills-title">Missing Skills</span>
-            </div>
-            <div className="skills-tags">
-              {job.missing_skills.map((skill, idx) => (
-                <span key={idx} className="skill-tag missing-tag">
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
-  ) : job.scoring ? (
-    <div className="ai-summary">
-      <div className="ai-summary-label">AI Analysis</div>
-      <span style={{ color: "var(--muted)" }}>Scoring...</span>
-    </div>
-  ) : null;
+  );
 };

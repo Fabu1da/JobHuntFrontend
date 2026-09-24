@@ -1,29 +1,79 @@
-export interface Job {
-  id: string;
-  title: string;
-  company?: string;
-  location?: string;
-  description?: string;
-  job_url?: string;
-  job_type: string;
-  site?: string;
-  date_posted?: string;
-  score?: number | null;
-  ai_summary?: string | null;
-  scoring?: boolean;
-  matched_skills?: string[];
-  missing_skills?: string[];
-  Salary_target?: string;
-  action?: string;
-  Verdict?: string;
-  Gaps?: string;
-  Hard_blockers?: string;
-  Stand_out?: string;
-  Recommendation?: string;
-  summary: string;
-  stand_out: string;
+export interface JobBreakdown {
+  semantic: number;
+  skills: number;
+  experience: number;
+  education: number;
+  languages: number;
+  location: number;
 }
 
+export interface JobLocation {
+  city: string | null;
+  country: string | null;
+  remote: boolean;
+  hybrid: boolean;
+  relocationRequired: boolean | null;
+}
+
+export interface JobSalary {
+  min: number | null;
+  max: number | null;
+  currency: string | null;
+  interval: string | null;
+}
+
+export interface JobExperience {
+  minYears: number | null;
+  maxYears: number | null;
+  seniority: string | null;
+}
+
+export interface JobEmployment {
+  type: string | null;
+  contract: string | null;
+}
+
+export interface JobEducationRequirement {
+  degree: string | null;
+  field: string | null;
+  required: boolean;
+}
+
+export interface JobCertification {
+  name: string | null;
+  issuer: string | null;
+  required: boolean;
+}
+
+export interface Job {
+  // identity
+  jobId: string;
+  title: string;
+  site: string;
+
+  // scoring
+  score: number;
+  breakdown: JobBreakdown;
+  matchedSkills: string[];
+  missingRequiredSkills: string[];
+  matchedPreferredSkills: string[];
+
+  // job details
+  summary: string | null;
+  responsibilities: string[];
+  requiredSkills: string[];
+  preferredSkills: string[];
+  technologies: string[];
+  experience: JobExperience;
+  education: JobEducationRequirement[];
+  certifications: JobCertification[];
+  languages: string[];
+  location: JobLocation;
+  employment: JobEmployment;
+  salary: JobSalary;
+  industry: string[];
+  domain: string[];
+}
 export interface AIScoreResult {
   score: number;
   summary: string;

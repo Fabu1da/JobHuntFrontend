@@ -1,11 +1,12 @@
 import { useState, useCallback } from "react";
-import type { Job, FilterType, Profile } from "../types";
+import type { FilterType, Profile } from "../types";
 import axios from "axios";
+import type { RawJobMatch } from "@/utils/jobTypes";
 
 export const useData = () => {
   const [query, setQuery] = useState("full stack developer");
   const [location, setLocation] = useState("Germany");
-  const [allJobs, setAllJobs] = useState<Job[]>([]);
+  const [allJobs, setAllJobs] = useState<RawJobMatch[]>([]);
   const [currentFilter, setCurrentFilter] = useState<FilterType>("all");
   const [isLoading, setIsLoading] = useState(false);
   const [buttonText, setButtonText] = useState("Search Jobs");

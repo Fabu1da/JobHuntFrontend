@@ -29,6 +29,12 @@ module.exports = {
         rust: "#b8463c",
         muted: "#7c7f86",
         border: "#e3ded2",
+         paper: "#fafaf7",
+        ink: {
+          DEFAULT: "#1b1d22",
+          soft: "#565a63",
+        },
+        cobalt: "#2b4c7e",
       },
     },
   },
