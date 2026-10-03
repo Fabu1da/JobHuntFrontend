@@ -113,3 +113,25 @@ export type FilterType =
   | "glassdoor"
   | "stepstone"
   | "google";
+
+// Same shapes the server returns from chartData()
+type ChartPoint = {
+  rank: number;
+  score: number;
+  title: string;
+  company: string | null;
+};
+
+export type DayChart = {
+  date: string;
+  totalJobs: number;
+  best: ChartPoint[];
+  worst: ChartPoint[];
+};
+
+export type Point = {
+  date: string;
+  label: string;
+  jobs: number;
+  topScore: number | null;
+};
