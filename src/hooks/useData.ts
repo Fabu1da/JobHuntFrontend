@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import type { FilterType, Profile } from "../types";
 import axios from "axios";
 import type { RawJobMatch } from "@/utils/jobTypes";
+import { useCvContext } from "./useCv";
 
 export const useData = () => {
   const [query, setQuery] = useState("full stack developer");
@@ -13,15 +14,28 @@ export const useData = () => {
   const [error, setError] = useState<string | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
 
+  const { selectedCvId } = useCvContext();
+
   const searchJobs = useCallback(async () => {
     setIsLoading(true);
     setButtonText("Searching...");
     setError(null);
     setAllJobs([]);
 
+    if (!selectedCvId) {
+      setError("Please select a CV before searching for jobs.");
+      setIsLoading(false);
+      setButtonText("Search Jobs");
+      return;
+    }
+
     try {
       const url = `${import.meta.env.VITE_BACKEND_URL}/api/job-search/search?q=${encodeURIComponent(query)}`;
-      const res = await axios.get(url);
+      const res = await axios.get(url, {
+        params: {
+          cvId: selectedCvId,
+        },
+      });
       const data = res.data;
 
       if (data.error) throw new Error(data.error);
@@ -44,7 +58,7 @@ export const useData = () => {
 
     setIsLoading(false);
     setButtonText("Search Jobs");
-  }, [query]);
+  }, [query, selectedCvId]);
 
   return {
     query,

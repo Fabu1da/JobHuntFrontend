@@ -1,9 +1,31 @@
 import type { Cv } from "@/types";
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import {
+  createContext,
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import { useAuth } from "./useAuth";
 
-export const useCvContext = () => {
+type CvContextValue = {
+  cvs: Cv[];
+  loading: boolean;
+  selectedCvId: string;
+  setSelectedCvId: (value: string) => void;
+  error: string | null;
+  addCv: (cv: Cv) => void;
+  removeCv: (cvId: string) => void;
+  setLoading: (value: boolean) => void;
+  setError: (value: string | null) => void;
+};
+
+const CvContext = createContext<CvContextValue | undefined>(undefined);
+
+const useCvState = (): CvContextValue => {
   const {
     data: userData,
     isAuthenticated,
@@ -13,6 +35,8 @@ export const useCvContext = () => {
   const [cvs, setCvs] = useState<Cv[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCvId, setSelectedCvId] = useState<string>("");
+
   const tokenUserId = token
     ? (() => {
         try {
@@ -80,10 +104,28 @@ export const useCvContext = () => {
   return {
     cvs,
     loading,
+    selectedCvId,
+    setSelectedCvId,
     error,
     addCv,
     removeCv,
     setLoading,
     setError,
   };
+};
+
+export const CvProvider = ({ children }: { children: ReactNode }) => {
+  const value = useCvState();
+
+  return createElement(CvContext.Provider, { value }, children);
+};
+
+export const useCvContext = (): CvContextValue => {
+  const context = useContext(CvContext);
+
+  if (!context) {
+    throw new Error("useCvContext must be used within CvProvider");
+  }
+
+  return context;
 };

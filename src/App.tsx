@@ -7,22 +7,25 @@ import { AuthProvider } from "./context/AuthContext";
 import { Home } from "./pages/Home";
 import { Bookmarks } from "./pages/Bookmarks";
 import { Profile } from "./pages/Profile";
+import { CvProvider } from "./hooks/useCv";
 
 function App() {
   return (
     <AuthProvider>
       <ProtectedRoute>
-        <DataProvider>
-          <div className="app">
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/bookmarks" element={<Bookmarks />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </div>
-        </DataProvider>
+        <CvProvider>
+          <DataProvider>
+            <div className="app">
+              <Navbar />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/bookmarks" element={<Bookmarks />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </div>
+          </DataProvider>
+        </CvProvider>
       </ProtectedRoute>
     </AuthProvider>
   );
